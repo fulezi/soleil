@@ -11,6 +11,7 @@
 
 #include "LevelReader.hpp"
 #include "Cube.hpp"
+#include "NPC.hpp"
 
 
 namespace Soleil
@@ -83,7 +84,7 @@ namespace Soleil
 	    else if (block == '*')
 	      {
 		osg::ref_ptr<osg::Node> model =
-		  osgDB::readNodeFile("/usr/home/florian/jeux/OpenSceneGraph-Data/axes.osgt");
+		  osgDB::readNodeFile("media/axes.osgt");
 		if (!model)
 		  throw "Cannot read model";
 		osg::ref_ptr<osg::PositionAttitudeTransform> g = new osg::PositionAttitudeTransform;
@@ -91,6 +92,13 @@ namespace Soleil
 		g->addChild(model);
 		level->addChild(g);
 		
+	      }
+	    else if (block == 'n')
+	      {
+		osg::ref_ptr<NPC> ghoul = new NPC(osg::Vec3(posx, posy, 0));
+		// //ghoul->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(0, 1, 0)));
+		// ghoul->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(1, 0, 0)));
+		level->addChild(ghoul);
 	      }
 	    else
 	      std::cout << "Unexpected character: " <<  block << std::endl;
@@ -128,7 +136,7 @@ namespace Soleil
     osgUtil::SmoothingVisitor::smooth(*geom);
     //
     osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("/usr/home/florian/Documents/Jeux/futur/stone_3_2048x2048.jpg");
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("media/textures/stone_3_2048x2048.jpg");
     texture->setImage(image);
     texture->setUnRefImageDataAfterApply(true);
     // 

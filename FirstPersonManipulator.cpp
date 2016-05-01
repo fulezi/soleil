@@ -147,8 +147,7 @@ namespace Soleil
   {
     bool r = StandardManipulator::handleFrame(ea, us);
 
-    if (_move.x() == 0 && _
-	move.z() == 0)
+    if (_move.x() == 0 && _move.z() == 0)
       return r;
     
     osg::Vec3d translation = _attitude * _move;
