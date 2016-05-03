@@ -29,6 +29,7 @@ namespace Soleil
   protected:
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array();
+    osg::ref_ptr<osg::Vec2Array> texcoords2 = new osg::Vec2Array();
     osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
     osg::ref_ptr<osg::Group> scene = new osg::Group;
 

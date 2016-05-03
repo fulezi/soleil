@@ -50,11 +50,6 @@ namespace Soleil
     view.makeLookAt(eye, center, up);
 
 
-    ////////////////////////////////////////////////////
-    // Necessary otherwise the camera seem head downs //
-    ////////////////////////////////////////////////////
-    // view.makeRotate(osg::DegreesToRadians(90.0), osg::Vec3(1, 0, 0));
-
     
     // std::cout << "FirstPersonManipulator::setTransformation: " << view  << "\n";
     
@@ -62,6 +57,7 @@ namespace Soleil
   }
 
 
+  /* TODO no more necessary */
   void 	FirstPersonManipulator::initTransformation(const osg::Vec3d &eye, const osg::Vec3d &center, const osg::Vec3d &up)
   {
         std::cout << "FirstPersonManipulator::initTransformation: "
@@ -72,13 +68,6 @@ namespace Soleil
     osg::Matrixd view;
     
     view.makeLookAt(eye, center, up);
-
-
-    ////////////////////////////////////////////////////
-    // Necessary otherwise the camera seem head downs //
-    ////////////////////////////////////////////////////
-    //view.makeRotate(osg::DegreesToRadians(90.0), osg::Vec3(1, 0, 0));
-
     
     // std::cout << "FirstPersonManipulator::setTransformation: " << view  << "\n";
     
@@ -156,6 +145,36 @@ namespace Soleil
 
     if (translation.isNaN())
       return r;
+
+
+    // New test
+    //osg::Matrix mc(us.asView()->getCamera()->getProjectionMatrix());
+    std::cout << "width:" << us.asView()->getCamera()->getViewport()->width() << "\n";
+    std::cout << "x:" << us.asView()->getCamera()->getViewport()->x() << "\n";
+    std::cout << "Matrix:" << us.asView()->getCamera()->getViewport()->computeWindowMatrix() << "\n";
+    //    // TEST intersection
+    //std::cout << "Translation: " << _position << " going to: " << translation   << "\n";
+    // {
+    // osg::Vec3 np = _position;
+    // np.x() += 0.5;
+    // osg::ref_ptr<osgUtil::LineSegmentIntersector>
+    //   intersector =
+    //   new osgUtil::LineSegmentIntersector(
+    // 					  np, translation
+    // 					  );
+    // //osgUtil::Intersector::WINDOW, ea.getX(), ea.getY()
+    // intersector->setIntersectionLimit(osgUtil::Intersector::IntersectionLimit::LIMIT_NEAREST);
+    // osgUtil::IntersectionVisitor iv( intersector.get() );
+    // iv.setTraversalMask( ~0x1 );
+    // us.asView()->getCamera()->accept( iv );
+    // if ( intersector->containsIntersections() )
+    //   {
+    // 	return r;
+    //   }
+    // }
+
+
+    // ------------
     
     // TEST intersection
     //std::cout << "Translation: " << _position << " going to: " << translation   << "\n";

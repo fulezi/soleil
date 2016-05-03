@@ -30,6 +30,8 @@ namespace Soleil
   protected:
     void createCube(Soleil::Level *level,
 		    float posx, float posy, float endx, float endy) const;
+    void createCube(Soleil::Level *level, osg::Vec2Array &tex, osg::Vec2Array &o,
+		    float posx, float posy, float endx, float endy) const;
   };
 
   

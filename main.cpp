@@ -55,6 +55,12 @@ osg::ref_ptr<osg::Node> createLightSource( unsigned int num,
   osg::ref_ptr<osg::Light> light = new osg::Light;
   light->setLightNum( num );
   light->setDiffuse( color );
+
+  /* full scene lightened: */
+  light->setAmbient(osg::Vec4(1.0,1.0,1.0,1.0));
+  light->setSpecular(osg::Vec4(1,1,1,1));  // some examples don't have this one
+
+  
   light->setPosition( osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f) );
   osg::ref_ptr<osg::LightSource> lightSource = new
     osg::LightSource;
@@ -152,6 +158,25 @@ int	main(int argc, char **argv)
   //   }
   // return 0;
 
+
+  viewer->realize();
+	
+	    for(unsigned int contextID = 0;
+	        contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
+	        ++contextID)
+	    {
+	        osg::GLExtensions* textExt = osg::GLExtensions::Get(contextID,false);
+	        if (textExt)
+	        {
+	            if (!textExt->isMultiTexturingSupported)
+	            {
+	                std::cout<<"Warning: multi-texturing not supported by OpenGL drivers, unable to run application."<<std::endl;
+	                return 1;
+	            }
+		    else
+		      std::cout << "Ouffff"  << "\n";
+	        }
+	    }
 
   
   return viewer->run();
