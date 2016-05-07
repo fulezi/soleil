@@ -141,7 +141,12 @@ int	main(int argc, char **argv)
   viewer->setSceneData(root);
 
   if (!arguments.read("-d"))
-    viewer->setCameraManipulator(new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation()));
+    {
+      Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation());
+      root->addChild(f->_tmp);
+    viewer->setCameraManipulator(f);
+    }
+    
   /* else auto-add trackball */
   
     

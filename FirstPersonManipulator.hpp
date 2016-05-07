@@ -5,6 +5,8 @@
 # include <osgGA/StandardManipulator>
 # include <osg/PositionAttitudeTransform>
 
+#include <osg/Geode>
+
 
 namespace Soleil
 {
@@ -71,10 +73,13 @@ namespace Soleil
   protected:
     osg::Vec3		_move;
     double		_rotationSpeed = 0.8;
-    double		_translationSpeed = 0.05;
+    double		_translationSpeed = 2.0;
+    double		_lastFrameTime = 0;
     //osg::Matrixd		_view;
 
-
+  public:
+    bool DrawedCollision(osgGA::GUIActionAdapter &us, const osg::Vec3 &start, const osg::Vec3 &end, osg::Vec4 c);
+    osg::ref_ptr<osg::Geode> _tmp = new osg::Geode();
     
   };
 

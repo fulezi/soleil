@@ -16,6 +16,21 @@
 
 namespace Soleil
 {
+  class LevelChunk
+  {
+  public:
+    LevelChunk() {};
+    virtual ~LevelChunk(void) {};
+
+    osg::ref_ptr<osg::Geometry>  toGeometry(void) const;
+    
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array();
+    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
+    unsigned int textureSlot = 0;
+    std::string texturePath = "media/textures/stone_3_2048x2048.jpg";
+  };
+
   class LevelReader //: public osgDB::ReaderWriter
   {
   public:
@@ -28,9 +43,7 @@ namespace Soleil
 
 
   protected:
-    void createCube(Soleil::Level *level,
-		    float posx, float posy, float endx, float endy) const;
-    void createCube(Soleil::Level *level, osg::Vec2Array &tex, osg::Vec2Array &o,
+    void createCube(LevelChunk *chunk,
 		    float posx, float posy, float endx, float endy) const;
   };
 

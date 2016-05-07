@@ -14,20 +14,22 @@ Start with '-d' to toggle the TrackBall view.
 
 
 ## In Progress
-   * Better collisions
+   * [DONE] Better collisions
+   * [DONE] Speed not related to frames rate
    * Multiples textues configurable with multiples signs
-   
+      
 ## Road Map
    * Stressing light
-   * Speed not related to frames rate
    * Port compilation (GNU/Linux, Windows)
    * Some vicious monsters
    * A cool Menu
    * A next level zone
    * A end
+   * A Tileable floor texture
 
 ## Bugs / PITA
    * The GetNextLine throw on EOF on Linux
+   * On startup thre is a glitch with the mouse + the translation is shaking until we move the mouse
 
 ## Current features
    * Doom view with almost the collisions

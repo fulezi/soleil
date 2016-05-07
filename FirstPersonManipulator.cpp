@@ -140,16 +140,16 @@ namespace Soleil
   bool FirstPersonManipulator::DrawedCollision(osgGA::GUIActionAdapter &us, const osg::Vec3 &start, const osg::Vec3 &end, osg::Vec4 c)
   {
     /* Uncomment the following part to draw a line corresponding to the collision */
-    osg::ref_ptr<osg::Geometry> line = new osg::Geometry;    
-    osg::ref_ptr<osg::Vec3Array> points = new osg::Vec3Array;
-    points->push_back(start);
-    points->push_back(end);
-    osg::ref_ptr<osg::Vec4Array> color = new osg::Vec4Array;
-    color->push_back(c);    
-    line->setVertexArray(points.get());
-    line->setColorArray(color.get());
-    line->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-    line->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,2));
+    // osg::ref_ptr<osg::Geometry> line = new osg::Geometry;    
+    // osg::ref_ptr<osg::Vec3Array> points = new osg::Vec3Array;
+    // points->push_back(start);
+    // points->push_back(end);
+    // osg::ref_ptr<osg::Vec4Array> color = new osg::Vec4Array;
+    // color->push_back(c);    
+    // line->setVertexArray(points.get());
+    // line->setColorArray(color.get());
+    // line->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    // line->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,2));
 
 
     osg::ref_ptr<osgUtil::LineSegmentIntersector>
@@ -165,7 +165,7 @@ namespace Soleil
     us.asView()->getCamera()->accept( iv );
 
 
-     _tmp->addChild(line);
+    //_tmp->addChild(line);
     return ( intersector->containsIntersections() );
   }
 
@@ -175,17 +175,20 @@ namespace Soleil
 
     if (_move.x() == 0 && _move.z() == 0)
       return r;
+
+    double deltaTime = ea.getTime() - _lastFrameTime;
+    _lastFrameTime = ea.getTime();
     
-    osg::Vec3d translation = _attitude * _move ;
+    osg::Vec3d translation = _attitude * (_move * deltaTime) ;
 
     // osg::Vec3d collisiona = _move;
     // collisiona.x() *= 1.;
     // collisiona.z() *= 1.;
     //osg::Vec3d collision = _attitude * _move;
-    osg::Vec3d collision = (_attitude * (_move * 8)) + _position;    
+    osg::Vec3d collision = (_attitude * (_move * 8 * deltaTime)) + _position;    
     // osg::Vec3d collision = _attitude * (_move * 1.012);
 
-
+    std::cout << "DeltaTime" << deltaTime  << "\n";
     
 
     translation.z() = 0;
