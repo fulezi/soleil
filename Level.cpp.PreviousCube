@@ -1,0 +1,193 @@
+
+
+#include "Level.hpp"
+#include "Cube.hpp"
+
+#include <osgDB/ReadFile>	
+
+
+#include <osg/Texture2D>
+#include <osg/Geometry>
+#include <osg/Geode>
+#include <osgUtil/SmoothingVisitor>
+
+// namespace Soleil
+// {
+
+  Level::Level()
+  {
+    supportsExtension("level", "Text map format for Donjon");
+  }
+
+Level::~Level()
+{
+}
+
+  Level::ReadResult Level::readNode(const std::string &file, const osgDB::ReaderWriter::Options *options) const
+  {
+    std::cout << "In file\n";
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext))
+      return ReadResult::FILE_NOT_HANDLED;
+
+    std::cout << "Extension\n";
+    std::string fileName = osgDB::findDataFile(file, options);
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND; // TODO throw e?
+
+    errno = 0;
+    std::cout << "Stream: " << fileName.c_str() << "\n";
+    std::ifstream stream;
+    stream.exceptions( std::ifstream::failbit); //  | std::ifstream::badbit
+    stream.open(fileName.c_str(), std::ios::in);
+    if (!stream) return ReadResult::ERROR_IN_READING_FILE;
+
+    std::cout << "next readNode\n";
+    return readNode(stream, options);
+  }
+  
+Level::ReadResult Level::readNode(std::istream &stream, const osgDB::ReaderWriter::Options *options) const
+{
+  char	block;
+  float	x = 0;
+  float	y = 0;
+
+
+
+
+  osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+  osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(GL_TRIANGLES);
+  osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array();
+  
+  osg::ref_ptr<osg::Group> scene = new osg::Group;
+
+  std::cout << "Before while\n";
+  // while (!stream.eof())
+  //   {
+  //		stream >> block;
+  int i = 0;
+    
+  std::string   line;
+  while(std::getline(stream, line))
+    {
+      std::stringstream linestream(line);
+
+      while (linestream >> block)
+	{
+	  // if (block == '\n') // TODO Windows
+	  //   {
+	  //     x  = 0;
+	  //     y -= 1.0; // TODO Cube size
+	  //     std::cout <<"New line\n";
+	  //   }
+	  // else
+	  if (block == 'x')
+	    {
+	      /* Cube:--------------------*/
+	      // osg::ref_ptr<Soleil::Mesh> cube = new Soleil::Cube();
+	      // cube->setPosition(osg::Vec3(x, y, 0.0));
+
+	      /* Cessna: ---------------- */
+	      // osg::ref_ptr<osg::Node> cube= osgDB::readNodeFile("/usr/home/florian/jeux/OpenSceneGraph-Data/cessna.osg");	      
+	      // scene->addChild(cube);
+
+
+	      float posx = 1.0 * x; 
+	      float posy = 1.0 * y;	      
+	      float endx = posx + 1.0;
+	      float endy = posy + 1.0;
+
+	      vertices->push_back(osg::Vec3( posx, posy, 0.0f));
+	      vertices->push_back(osg::Vec3( endx, posy, 0.0f));
+	      vertices->push_back(osg::Vec3( endx, posy, 1.0f));
+	      vertices->push_back(osg::Vec3( posx, posy, 1.0f));
+	      // Top
+	      vertices->push_back(osg::Vec3( posx, endy, 1.0f));
+	      vertices->push_back(osg::Vec3( endx, endy, 1.0f));
+	      // Back
+	      vertices->push_back(osg::Vec3( endx, endy, 0.0f));
+	      vertices->push_back(osg::Vec3( posx, endy, 0.0f));
+
+
+	      // Front
+	      indices->push_back( i+0 ); indices->push_back( i+1 ); indices->push_back( i+2 );
+	      indices->push_back( i+3 ); indices->push_back( i+0 ); indices->push_back( i+2 );
+	      // Top
+	      indices->push_back( i+3 ); indices->push_back( i+4 ); indices->push_back( i+2 );
+	      indices->push_back( i+4 ); indices->push_back( i+5 ); indices->push_back( i+2 );
+	      // Back
+	      indices->push_back( i+6 ); indices->push_back( i+7 ); indices->push_back( i+5 );
+	      indices->push_back( i+4 ); indices->push_back( i+7 ); indices->push_back( i+5 );
+	      // left ---
+	      indices->push_back( i+7 ); indices->push_back( i+3 ); indices->push_back( i+4 );
+	      indices->push_back( i+0 ); indices->push_back( i+7 ); indices->push_back( i+3 );
+	      // right
+	      indices->push_back( i+2 ); indices->push_back( i+5 ); indices->push_back( i+6 );
+	      indices->push_back( i+1 ); indices->push_back( i+2 ); indices->push_back( i+6 );
+	      // Bottom
+	      indices->push_back( i+0 ); indices->push_back( i+7 ); indices->push_back( i+1 );
+	      indices->push_back( i+1 ); indices->push_back( i+6 ); indices->push_back( i+7 );
+
+
+
+
+	      texcoords->push_back( osg::Vec2(0.0f, 0.0f) ); // 0
+	      texcoords->push_back( osg::Vec2(0.0f, 1.0f) ); // 1
+	      texcoords->push_back( osg::Vec2(1.0f, 1.0f) ); // 2
+	      texcoords->push_back( osg::Vec2(1.0f, 0.0f) ); // 3
+	      // //
+	      // texcoords->push_back( osg::Vec2(0.0f, 0.0f) ); // 4
+	      // texcoords->push_back( osg::Vec2(0.0f, 1.0f) ); // 5
+	      // texcoords->push_back( osg::Vec2(1.0f, 1.0f) ); // 6
+	      // texcoords->push_back( osg::Vec2(1.0f, 0.0f) ); // 7
+
+	      
+	      
+	      std::cout << i <<") New cube: "<< x << ", " << y << "\t[" << posx << ", " << endx << "]-[" << posy << ", " << endy << "]\n";
+	      i += 8;
+	    }
+	  else
+	    std::cout << "Unexpected character: " <<  block << std::endl;
+
+	  x += 1.0;
+	}
+      x  = 0;
+      y -= 1.0; // TODO Cube size
+    }
+  // TODO read failed?
+
+  osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+  geom->setVertexArray(vertices);
+  geom->addPrimitiveSet(indices);
+  osgUtil::SmoothingVisitor::smooth(*geom);
+  // osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array(16);
+  // (*texcoords)[0].set( osg::Vec2(0.0f, 0.0f) );
+  // (*texcoords)[1].set( osg::Vec2(0.0f, 1.0f) );
+  // (*texcoords)[2].set( osg::Vec2(1.0f, 1.0f) );
+  // (*texcoords)[3].set( osg::Vec2(1.0f, 0.0f) );
+  // //
+  // (*texcoords)[4].set( osg::Vec2(0.0f, 0.0f) );
+  // (*texcoords)[5].set( osg::Vec2(0.0f, 1.0f) );
+  // (*texcoords)[6].set( osg::Vec2(1.0f, 1.0f) );
+  // (*texcoords)[7].set( osg::Vec2(1.0f, 0.0f) );
+  //
+  geom->setTexCoordArray(0, texcoords.get(), osg::Array::Binding::BIND_PER_VERTEX);
+  //
+  osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
+  osg::ref_ptr<osg::Image> image = osgDB::readImageFile("/usr/home/florian/Documents/Jeux/futur/stone_3_2048x2048.jpg");
+  texture->setImage(image);
+  texture->setUnRefImageDataAfterApply(true);
+  // 
+  osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+  geode->addDrawable(geom);
+
+  scene->addChild(geode);
+  scene->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture);
+ 
+  std::cout << "done.";
+  return scene.release();
+}
+
+  
+//} 
+
+REGISTER_OSGPLUGIN(level, Level)

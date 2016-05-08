@@ -16,7 +16,8 @@ Start with '-d' to toggle the TrackBall view.
 ## In Progress
    * [DONE] Better collisions
    * [DONE] Speed not related to frames rate
-   * Multiples textues configurable with multiples signs
+   * [DONE] Multiples textues configurable with multiples signs
+   * [DONE] A Tileable floor texture
       
 ## Road Map
    * Stressing light
@@ -25,7 +26,8 @@ Start with '-d' to toggle the TrackBall view.
    * A cool Menu
    * A next level zone
    * A end
-   * A Tileable floor texture
+   * Bump textures
+   * Some anxious sounds
 
 ## Bugs / PITA
    * The GetNextLine throw on EOF on Linux

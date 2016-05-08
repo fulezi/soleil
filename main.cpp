@@ -93,7 +93,10 @@ int	main(int argc, char **argv)
       if (!arguments.read("-l", osg::ArgumentParser::Parameter(file)))
 	level = l.readFile("media/bastion.level");
       else
-	level = l.readFile(file);
+	{
+	  //level = l.readFile(file);
+	  level = l.readYAML(file);
+	}
 
       // level = l.readFile("/usr/home/florian/Documents/Jeux/futur/axes.level");
       //level = l.readFile("/usr/home/florian/Documents/Jeux/futur/large.level");

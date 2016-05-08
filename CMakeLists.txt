@@ -10,6 +10,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/")
 find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA osgDB  osgUtil osgAnimation osgManipulator) # 3.5.1  .. PATHS ${OSG_PATH}
 
 FIND_PACKAGE(CPPUNIT REQUIRED)
+FIND_PACKAGE(YamlCpp REQUIRED)
+
 find_package(Boost
   COMPONENTS format
   )
@@ -20,6 +22,7 @@ find_package(Boost
 include_directories (SYSTEM
   ${OSG_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
+  ${YAML_INCLUDE_DIR}
   )
 
 set(HDRS
@@ -64,7 +67,7 @@ target_link_libraries(soleil
   ${OSG_LIBRARY}
   ${OPENSCENEGRAPH_LIBRARIES}
   ${Boost_LIBRARIES}
-
+  ${YAMLCPP_LIBRARY}
   )
 
 ########

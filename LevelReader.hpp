@@ -38,6 +38,7 @@ namespace Soleil
     virtual ~LevelReader(void);
 
   public:
+    virtual osg::ref_ptr<Level> readYAML(const std::string &file) const;
     virtual osg::ref_ptr<Level> readFile(const std::string&) const;
     virtual osg::ref_ptr<Level> readStream(std::istream&) const;
 
