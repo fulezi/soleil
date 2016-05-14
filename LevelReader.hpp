@@ -31,7 +31,7 @@ namespace Soleil
     std::string texturePath = "media/textures/stone_3_2048x2048.jpg";
   };
 
-  class LevelReader //: public osgDB::ReaderWriter
+  class LevelReader
   {
   public:
     LevelReader();
@@ -39,9 +39,6 @@ namespace Soleil
 
   public:
     virtual osg::ref_ptr<Level> readYAML(const std::string &file) const;
-    virtual osg::ref_ptr<Level> readFile(const std::string&) const;
-    virtual osg::ref_ptr<Level> readStream(std::istream&) const;
-
 
   protected:
     void createCube(LevelChunk *chunk,

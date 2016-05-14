@@ -57,8 +57,8 @@ osg::ref_ptr<osg::Node> createLightSource( unsigned int num,
   light->setDiffuse( color );
 
   /* full scene lightened: */
-  light->setAmbient(osg::Vec4(1.0,1.0,1.0,1.0));
-  light->setSpecular(osg::Vec4(1,1,1,1));  // some examples don't have this one
+  light->setAmbient(osg::Vec4(0.1,0.1,0.1,0.1));
+  light->setSpecular(osg::Vec4(0.1,0.1,0.1,0.1));  // some examples don't have this one
 
   
   light->setPosition( osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f) );
@@ -77,8 +77,8 @@ int	main(int argc, char **argv)
   
   osg::ref_ptr<osg::Group> root = new osg::Group;
 
-  root->addChild(createLightSource(0, osg::Vec3(0, -2.0, 0), osg::Vec4(1.0, 1.0, 1.0, 1.0)));
-  root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(1.0, 1.0, 1.0, 1.0)));
+  root->addChild(createLightSource(0, osg::Vec3(0, -2.0, 0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
+  root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
 
   root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
   root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
@@ -91,7 +91,7 @@ int	main(int argc, char **argv)
       std::string file;
 
       if (!arguments.read("-l", osg::ArgumentParser::Parameter(file)))
-	level = l.readFile("media/bastion.level");
+	level = l.readYAML("media/bastion.level");
       else
 	{
 	  //level = l.readFile(file);
