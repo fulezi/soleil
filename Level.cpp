@@ -7,7 +7,8 @@
 namespace Soleil
 {
   
-  Level::Level()
+  Level::Level(osg::ref_ptr<osg::Group> root)
+    : _root(root)
   {
   }
   

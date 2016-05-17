@@ -33,7 +33,7 @@ namespace Soleil
   }
 
 
-  osg::ref_ptr<Level> LevelReader::readYAML(const std::string &file) const
+  osg::ref_ptr<Level> LevelReader::readYAML(const std::string &file, osg::ref_ptr<osg::Group> root) const
   {
     YAML::Node config = YAML::LoadFile(file);
 
@@ -63,8 +63,9 @@ namespace Soleil
     float	y = 0;			// Current position on y
     int		wallCount = 0; 		// Number of cubes
     float	maxX = 0;		// Max size of the map in X
+    int		npcId = 0;
 
-    osg::ref_ptr<Soleil::Level> level = new Soleil::Level();
+    osg::ref_ptr<Soleil::Level> level = new Soleil::Level(root);
     for (int i = 0; i < map.size(); i++) {
       block = map[i];
       /* TODO Configurable size for the blocks */
@@ -93,9 +94,12 @@ namespace Soleil
 	  break;
 	case 'n':
 	  {
-	    osg::ref_ptr<NPC> ghoul = new NPC(osg::Vec3(posx + .5 , posy + .5 , 0));
+	    npcId++;
+	    osg::ref_ptr<NPC> ghoul = new NPC(osg::Vec3(posx + .5 , posy + .5 , 0), root);
+	    ghoul->setScale(osg::Vec3(.6, .6, .6));
 	    // //ghoul->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(0, 1, 0)));
 	    // ghoul->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(1, 0, 0)));
+	    ghoul->setName("GhoulNode_"+std::to_string(npcId));
 	    level->addChild(ghoul);
 	  }
 	  break;
@@ -112,7 +116,7 @@ namespace Soleil
 	}
     }
 
-    
+      std::cout << NPC::ClassName  << "\n";
 
     // Floor -------------
     level->vertices->push_back(osg::Vec3(0.0f, 0.0f, 0.0f));
@@ -132,6 +136,7 @@ namespace Soleil
 
 
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    geom->setName("FloorGometry");
     geom->setVertexArray(level->vertices);
     geom->setNormalArray(level->normals, osg::Array::Binding::BIND_PER_VERTEX);
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4)); // +4 for the floor texture coordinates
@@ -290,6 +295,7 @@ namespace Soleil
 
   osg::ref_ptr<osg::Geometry>  LevelChunk::toGeometry(void) const
   {
+    static int cubeId = 0;
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
     geom->setVertexArray(vertices);
     geom->setNormalArray(normals, osg::Array::Binding::BIND_PER_VERTEX);
@@ -309,6 +315,8 @@ namespace Soleil
 
     geom->getOrCreateStateSet()->setMode(osg::TexEnv::BLEND, osg::StateAttribute::ON);
 
+    geom->setName("CubeId_"+std::to_string(cubeId));
+    cubeId++;
     
     return geom;
   }

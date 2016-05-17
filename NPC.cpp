@@ -3,12 +3,22 @@
 #include <osgAnimation/BasicAnimationManager>
 #include <osg/PositionAttitudeTransform>
 #include <osg/AnimationPath>
+#include <osgUtil/LineSegmentIntersector>
+
+#include <iostream>
+#include <iomanip>
+#include <chrono>
+#include <ctime>
+#include <thread>
 
 #include "NPC.hpp"
+#include "CollisionUtil.hpp"
 
 namespace Soleil
 {
+  const char *NPC::ClassName = "Soleil::NPC";
 
+  
   osg::ref_ptr<osg::AnimationPath> NPC::createAnimationPath(float time)
     {
       osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
@@ -59,7 +69,8 @@ namespace Soleil
 
 
   
-  NPC::NPC(const osg::Vec3d &eye) /// , const osg::Vec3d &center
+  NPC::NPC(const osg::Vec3d &eye, osg::ref_ptr<osg::Group> root) /// , const osg::Vec3d &center
+    : _root(root)
   {
     osg::ref_ptr<osg::Node> model =
       osgDB::readNodeFile("media/spider_flare.osgt");
@@ -104,7 +115,7 @@ namespace Soleil
     // apcb->setAnimationPath(_path);
     //this->setUpdateCallback(apcb);
 
-    moveForward();
+    //moveForward();
     //turnRight(Cardinal::S, Direction::right);
   }
 
@@ -135,6 +146,9 @@ namespace Soleil
 
   void NPC::moveForward(void)
   {
+    const std::clock_t beginTime = std::clock();
+    auto t_start = std::chrono::high_resolution_clock::now();
+
     float time = 1.0;
     osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
 
@@ -146,7 +160,7 @@ namespace Soleil
     osg::Vec3 pos(this->getPosition());
     osg::Quat rot(this->getAttitude());
     float speed = 1.0 / (float)numSamples;
-    for ( unsigned int i=0; i<numSamples; ++i )
+    for (unsigned int i=0; i<numSamples; ++i)
       {
 	//float yaw = delta_yaw * (float)i;
 	// osg::Vec3 pos( sinf(yaw)*radius, cosf(yaw)*radius, 0.0f );
@@ -165,17 +179,29 @@ namespace Soleil
 
     //osg::ref_ptr<osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
     //    apcb->setAnimationPath(path);
-    osg::ref_ptr<osg::AnimationPathCallback> apcb = new MovementCallBack(path);
-    this->setUpdateCallback(apcb);
+    _apcb = new MovementCallBack(path);
+    this->setUpdateCallback(_apcb);
+
+
+    
+    const std::clock_t endTime = std::clock();
+    auto t_end = std::chrono::high_resolution_clock::now();
+    
+    // std::cout << std::fixed << std::setprecision(2) << "CPU time used: "
+    //           << 1000.0 * (endTime-beginTime) / CLOCKS_PER_SEC << " ms\n"
+    //           << "Wall clock time passed: "
+    //           << std::chrono::duration<double, std::milli>(t_end-t_start).count()
+    //           << " ms\n";
   }
 
   void NPC::turnRight(int cardinal, Direction direction)
   {
-    float time = 1 + (cardinal / 4); /** TODO Slow a little bit when the NPC do revert but not too much */
+    //float time = 1 + (cardinal / 4); /** TODO Slow a little bit when the NPC do revert but not too much */
+    float time = 1;
     osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
 
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-    unsigned int numSamples = 64;
+    unsigned int numSamples = 10;
     float delta_yaw = 2.0f * osg::PI / ((float)numSamples - 1.0f);
     float delta_time = time / (float)numSamples;
 
@@ -198,11 +224,60 @@ namespace Soleil
 
       }
 
-    osg::ref_ptr<osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
-    apcb->setAnimationPath(path);
-    this->setUpdateCallback(apcb);
+    // osg::ref_ptr<osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
+    // apcb->setAnimationPath(path);
+    // this->setUpdateCallback(apcb);
+    _apcb = new MovementCallBack(path);
+    this->setUpdateCallback(_apcb);
 
   }
+
+  void NPC::think()
+  {
+    //osg::Vec3 front(this->getPosition());
+    // // osg::Vec3 front =  getAttitude() * this->getPosition();
+    //front.x() -= 1.0;
+    // osg::Vec3d move(0, 0, 10);
+    // osg::Vec3d front = (getAttitude() * move) + getPosition();
+    
+    
+
+    
+    // osg::ref_ptr<osgUtil::LineSegmentIntersector> line = new osgUtil::LineSegmentIntersector(getPosition(), front);
+    // //line->setIntersectionLimit(osgUtil::Intersector::IntersectionLimit::LIMIT_NEAREST);
+    
+    // osgUtil::IntersectionVisitor  v(line);
+    // //v.setTraversalMask(~0x1);
+    
+    // _root->accept(v);
+
+    // if (line->containsIntersections())
+    //   {
+    // 	turnRight(Cardinal::W, Direction::right);
+    // 	return;
+    //   }
+
+    // if (CollisionUtil(osg::Vec3(0, 0, -0.5), osg::Vec3(0, 0, -1), osg::Vec4(1,1,1,1), this, false).compute(*_root))
+    //   {
+    // 	turnRight(Cardinal::W, Direction::right);
+    // 	return;
+    //   }
+    moveForward();
+  }
+
+  const char *NPC::className() const
+  {
+    return ClassName;
+  }
+
+  bool NPC::isAnimated(void) const
+  {
+    if (!_apcb) return false;
+    
+    return _apcb->getPause();
+  }
+
+
 
   NPC::MovementCallBack::MovementCallBack(osg::AnimationPath *ap)
     : AnimationPathCallback(ap)
@@ -215,13 +290,8 @@ namespace Soleil
   
   void NPC::MovementCallBack::operator() (osg::Node *node, osg::NodeVisitor *nv)
   {
-    if (this->getAnimationTime() >= 1.0)
-      {
-	setPause(true);
-	static_cast<NPC*>(node)->moveForward();
-	return ;//  TODO does the return help?
-      }
-
+    //std::cout << "Time:" <<  nv->getFrameStamp()->getSimulationTime()  << "\n";
+    
     if (getPause())
       {
 	// must call any nested node callbacks and continue subgraph traversal.
@@ -229,6 +299,15 @@ namespace Soleil
 	// But not continue
 	return ;
       }
+
+    if (this->getAnimationTime() >= .99)
+      {
+    	setPause(true);
+    	// //static_cast<NPC*>(node)->moveForward();
+	// static_cast<NPC*>(node)->think();
+    	// // return ;//  TODO does the return help?
+      }
+    
     osg::AnimationPathCallback::operator()(node, nv);
   }
   

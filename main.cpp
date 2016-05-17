@@ -13,6 +13,7 @@
 
 #include "LevelReader.hpp"
 #include "FirstPersonManipulator.hpp"
+#include "UpdateNPCVisitor.hpp"
 
 #include <iostream>
 #include <osg/io_utils>
@@ -76,13 +77,13 @@ int	main(int argc, char **argv)
   osg::ArgumentParser arguments(&argc,argv);
   
   osg::ref_ptr<osg::Group> root = new osg::Group;
+  root->setName("rootNode");
 
   root->addChild(createLightSource(0, osg::Vec3(0, -2.0, 0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
   root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
 
   root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
   root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
-
 
   Soleil::LevelReader l;
   osg::ref_ptr<Soleil::Level>  level;
@@ -91,11 +92,11 @@ int	main(int argc, char **argv)
       std::string file;
 
       if (!arguments.read("-l", osg::ArgumentParser::Parameter(file)))
-	level = l.readYAML("media/bastion.level");
+	level = l.readYAML("media/bastion.level", root);
       else
 	{
 	  //level = l.readFile(file);
-	  level = l.readYAML(file);
+	  level = l.readYAML(file, root);
 	}
 
       // level = l.readFile("/usr/home/florian/Documents/Jeux/futur/axes.level");
@@ -117,7 +118,11 @@ int	main(int argc, char **argv)
       std::cout << "Read model failed: "<< msg  << "\n";
       return 1;
     }
-  
+
+
+
+  // Scene Events
+  root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
 
   
   //////////
@@ -147,7 +152,7 @@ int	main(int argc, char **argv)
     {
       Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation());
       root->addChild(f->_tmp);
-    viewer->setCameraManipulator(f);
+      viewer->setCameraManipulator(f);
     }
     
   /* else auto-add trackball */
@@ -169,22 +174,22 @@ int	main(int argc, char **argv)
 
   viewer->realize();
 	
-	    for(unsigned int contextID = 0;
-	        contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
-	        ++contextID)
+  for(unsigned int contextID = 0;
+      contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
+      ++contextID)
+    {
+      osg::GLExtensions* textExt = osg::GLExtensions::Get(contextID,false);
+      if (textExt)
+	{
+	  if (!textExt->isMultiTexturingSupported)
 	    {
-	        osg::GLExtensions* textExt = osg::GLExtensions::Get(contextID,false);
-	        if (textExt)
-	        {
-	            if (!textExt->isMultiTexturingSupported)
-	            {
-	                std::cout<<"Warning: multi-texturing not supported by OpenGL drivers, unable to run application."<<std::endl;
-	                return 1;
-	            }
-		    else
-		      std::cout << "Ouffff"  << "\n";
-	        }
+	      std::cout<<"Warning: multi-texturing not supported by OpenGL drivers, unable to run application."<<std::endl;
+	      return 1;
 	    }
+	  else
+	    std::cout << "Ouffff"  << "\n";
+	}
+    }
 
   
   return viewer->run();

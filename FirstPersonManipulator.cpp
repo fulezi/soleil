@@ -185,7 +185,7 @@ namespace Soleil
     // collisiona.x() *= 1.;
     // collisiona.z() *= 1.;
     //osg::Vec3d collision = _attitude * _move;
-    osg::Vec3d collision = (_attitude * (_move * 8 * deltaTime)) + _position;    
+    osg::Vec3d collision = (_attitude * (_move * 8 * deltaTime)) + _position;
     // osg::Vec3d collision = _attitude * (_move * 1.012);
 
     std::cout << "DeltaTime" << deltaTime  << "\n";

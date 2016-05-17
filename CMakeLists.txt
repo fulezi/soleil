@@ -33,6 +33,7 @@ set(HDRS
   Level.hpp
   FirstPersonManipulator.hpp
   NPC.hpp
+  UpdateNPCVisitor.hpp
   )
 
 set(SRCS
@@ -43,6 +44,7 @@ set(SRCS
   Level.cpp
   FirstPersonManipulator.cpp
   NPC.cpp
+  UpdateNPCVisitor.cpp
   )
 
 ################

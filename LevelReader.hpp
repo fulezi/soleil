@@ -38,7 +38,7 @@ namespace Soleil
     virtual ~LevelReader(void);
 
   public:
-    virtual osg::ref_ptr<Level> readYAML(const std::string &file) const;
+    virtual osg::ref_ptr<Level> readYAML(const std::string &file, osg::ref_ptr<osg::Group> root) const;
 
   protected:
     void createCube(LevelChunk *chunk,

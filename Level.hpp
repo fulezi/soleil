@@ -14,7 +14,7 @@ namespace Soleil
   class Level : public osg::Group
   {
   public:
-    Level();
+    Level(osg::ref_ptr<osg::Group> root);
     virtual ~Level(void);
 
   public:
@@ -23,8 +23,9 @@ namespace Soleil
 
 
   protected:
-    osg::Vec3		_startingPosition;
-    osg::Vec3		_startingOrientation;
+    osg::ref_ptr<osg::Group>	_root;
+    osg::Vec3			_startingPosition;
+    osg::Vec3			_startingOrientation;
     
   protected:
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
