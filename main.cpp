@@ -14,6 +14,7 @@
 #include "LevelReader.hpp"
 #include "FirstPersonManipulator.hpp"
 #include "UpdateNPCVisitor.hpp"
+#include "NextLevelZoneCallBack.hpp"
 
 #include <iostream>
 #include <osg/io_utils>
@@ -92,7 +93,7 @@ int	main(int argc, char **argv)
       std::string file;
 
       if (!arguments.read("-l", osg::ArgumentParser::Parameter(file)))
-	level = l.readYAML("media/bastion.level", root);
+	level = l.readYAML("media/shu.level", root);
       else
 	{
 	  //level = l.readFile(file);
@@ -123,7 +124,7 @@ int	main(int argc, char **argv)
 
   // Scene Events
   root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
-
+  
   
   //////////
   // TEST //
@@ -153,6 +154,8 @@ int	main(int argc, char **argv)
       Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation());
       root->addChild(f->_tmp);
       viewer->setCameraManipulator(f);
+
+      root->addUpdateCallback(new Soleil::NextLevelZoneCallBack(*level, *f, *viewer));
     }
     
   /* else auto-add trackball */

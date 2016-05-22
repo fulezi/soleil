@@ -34,6 +34,7 @@ set(HDRS
   FirstPersonManipulator.hpp
   NPC.hpp
   UpdateNPCVisitor.hpp
+  NextLevelZoneCallBack.hpp
   )
 
 set(SRCS
@@ -45,6 +46,7 @@ set(SRCS
   FirstPersonManipulator.cpp
   NPC.cpp
   UpdateNPCVisitor.cpp
+  NextLevelZoneCallBack.cpp
   )
 
 ################

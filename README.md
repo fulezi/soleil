@@ -14,14 +14,14 @@ Start with '-d' to toggle the TrackBall view.
 
 
 ## In Progress
-   * Some vicious monsters
+   * A next level zone  
    
 ## Road Map
    * Stressing light
    * Port compilation (GNU/Linux, Windows)
    * A cool Menu
-   * A next level zone
    * A end
+   * Death when player colliding with the monster
    * Bump textures
    * Some anxious sounds
    * Allow the configuration of the texture of the floor
@@ -37,5 +37,6 @@ Start with '-d' to toggle the TrackBall view.
    * loading map based on YAML with configurable walls textures
    * A floor with repeated texture
    * A wall with a texture
+   * Some vicious monsters   
    * [Dev] Run with '-d' to start with a trackball
    * [Dev] Start a specific map with '-l /path/to/map/level'

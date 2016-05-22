@@ -25,13 +25,14 @@ namespace Soleil
     return CollisionUtil(position, translation).compute(*_root) == false;
   }
 
-  
+
+  // TODO Add time so the move is independent of the fps
   void UpdateNPCVisitor::apply(osg::Node &node)
   {
-    std::cout << "-----------------" << node.getName() << ":" << node.className() << "\n";
+    //std::cout << "-----------------" << node.getName() << ":" << node.className() << "\n";
     if (node.className() == NPC::ClassName) 
       {
-	std::cout << "\t-----------------" << node.getName() << "\n";
+	//std::cout << "\t-----------------" << node.getName() << "\n";
 
 	//std::cout << "Callback"  << "\n";
 	NPC &npc = static_cast<NPC&>(node);
@@ -127,7 +128,7 @@ namespace Soleil
       }
     //std::cout << "---->" <<  node.className() << " : " << node.getName() << "\n";
 
-    std::cout << "-----------------" << node.getName() << "\n";
+    //std::cout << "-----------------" << node.getName() << "\n";
     traverse(node);
   }
 

@@ -6,6 +6,7 @@
 
 namespace Soleil
 {
+  const char *NextLevelZone::ClassName = "Soleil:Nextlevelzone";
   
   Level::Level(osg::ref_ptr<osg::Group> root)
     : _root(root)

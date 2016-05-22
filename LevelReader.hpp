@@ -22,13 +22,14 @@ namespace Soleil
     LevelChunk() {};
     virtual ~LevelChunk(void) {};
 
-    osg::ref_ptr<osg::Geometry>  toGeometry(void) const;
+    osg::ref_ptr<osg::Geometry>	toGeometry(void);// const;
     
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     osg::ref_ptr<osg::Vec2Array> texcoords = new osg::Vec2Array();
     osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
     unsigned int textureSlot = 0;
     std::string texturePath = "media/textures/stone_3_2048x2048.jpg";
+    std::string nextZone = "";
   };
 
   class LevelReader

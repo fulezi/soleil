@@ -40,6 +40,10 @@ namespace Soleil
     YAML::Node blocks = config["blocks"];
     if (!blocks.IsMap())
       throw "The Block section must be a list"; // TODO Clear exception with line number
+    YAML::Node zones = config["zones"];
+    if (!zones.IsMap())
+      throw "The Block section must be a list"; // TODO Clear exception with line number
+    
 
     std::map<char, LevelChunk> chunks;
     
@@ -53,6 +57,13 @@ namespace Soleil
       char c = key[0];
       chunks[c].texturePath = value;
       std::cout << "Key: " << key << ", value: " << value << std::endl;
+
+      /* TODO NLEV: if key appears in zone: */
+      if (zones[c])
+	{
+	  chunks[c].nextZone = zones[c].as<std::string>();
+	  std::cout << "Chunck " << c << " is a next zone: " << chunks[c].nextZone << "\n";
+	}
     }
 
     std::string map = config["map"].as<std::string>();
@@ -161,7 +172,12 @@ namespace Soleil
     
     level->addChild(geode);
     for(std::map<char, LevelChunk>::iterator it = chunks.begin(); it != chunks.end(); ++it) {
-      level->addChild(it->second.toGeometry());
+      osg::ref_ptr<osg::Geometry> cube = it->second.toGeometry();
+      
+      level->addChild(cube);
+      
+      if (it->second.nextZone.length() > 0)
+	level->_nextLevelZones.push_back(cube);
     }
 
     
@@ -293,10 +309,18 @@ namespace Soleil
   }
 
 
-  osg::ref_ptr<osg::Geometry>  LevelChunk::toGeometry(void) const
+  osg::ref_ptr<osg::Geometry>  LevelChunk::toGeometry(void)// const
   {
     static int cubeId = 0;
-    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    osg::ref_ptr<osg::Geometry> geom;
+    //if (cubeId == 6)
+    if (this->nextZone.length() > 0)
+      {
+	geom = new NextLevelZone;
+	std::cout << "Creating next zone: " << this->nextZone << "\n";
+      }
+    else
+      geom = new osg::Geometry;
     geom->setVertexArray(vertices);
     geom->setNormalArray(normals, osg::Array::Binding::BIND_PER_VERTEX);
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, normals->size()));
@@ -317,6 +341,12 @@ namespace Soleil
 
     geom->setName("CubeId_"+std::to_string(cubeId));
     cubeId++;
+
+    // if (cubeId == 6)
+    //   nextZone = "!! Sortie !!";
+
+    // TODO NLEV: Use UserDataContainer to store the next level? Or use a callback that when tigeered, trigger the next level?
+    
     
     return geom;
   }

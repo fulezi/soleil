@@ -164,7 +164,6 @@ namespace Soleil
     iv.setTraversalMask( ~0x1 );
     us.asView()->getCamera()->accept( iv );
 
-
     //_tmp->addChild(line);
     return ( intersector->containsIntersections() );
   }
@@ -188,7 +187,6 @@ namespace Soleil
     osg::Vec3d collision = (_attitude * (_move * 8 * deltaTime)) + _position;
     // osg::Vec3d collision = _attitude * (_move * 1.012);
 
-    std::cout << "DeltaTime" << deltaTime  << "\n";
     
 
     translation.z() = 0;
@@ -203,13 +201,14 @@ namespace Soleil
     int collisionCount = 0;
     // New test
     //osg::Matrix mc(us.asView()->getCamera()->getProjectionMatrix());
-    std::cout << "width:" << us.asView()->getCamera()->getViewport()->width() << "\n";
-    std::cout << "x:" << us.asView()->getCamera()->getViewport()->x() << "\n";
-    std::cout << "Matrix:" << us.asView()->getCamera()->getViewport()->computeWindowMatrix() << "\n";
+    // std::cout << "DeltaTime" << deltaTime  << "\n";
+    // std::cout << "width:" << us.asView()->getCamera()->getViewport()->width() << "\n";
+    // std::cout << "x:" << us.asView()->getCamera()->getViewport()->x() << "\n";
+    // std::cout << "Matrix:" << us.asView()->getCamera()->getViewport()->computeWindowMatrix() << "\n";
     //    // TEST intersection
     //std::cout << "Translation: " << _position << " going to: " << translation   << "\n";
     {
-      std::cout << "Intersection between:" <<_position << " and " << collision  << "\n";
+      // std::cout << "Intersection between:" <<_position << " and " << collision  << "\n";
 
       osg::Vec3 diry(_position.x(),collision.y(), _position.z());
       // osg::ref_ptr<osgUtil::LineSegmentIntersector>
@@ -257,7 +256,7 @@ namespace Soleil
 
     }
 
-    std::cout << "Translation:" << translation  << "\n";
+    // std::cout << "Translation:" << translation  << "\n";
 
     // ------------
     
@@ -355,6 +354,9 @@ namespace Soleil
 	case 'd': case 'D':
 	  _move.x() = 0;
 	  break;
+	case '-':
+	  std::cout << "--------------------------------------------------------------------------------" << "\n";
+	  break;
 	}
       return true;
     }
@@ -406,7 +408,6 @@ namespace Soleil
       StandardManipulator::init(ea, us);
       addMouseEvent( ea );
       centerMousePointer(ea, us);
-      std::cout << "Yaaaaaaaaaaaaaaaaaaaaaaa"  << "\n";
     }
 
     void 	FirstPersonManipulator::home(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &us)
@@ -414,7 +415,6 @@ namespace Soleil
       StandardManipulator::home(ea, us);
       addMouseEvent( ea );
       centerMousePointer(ea, us);
-      std::cout << "Yaaaaaaaaaaaaaaaaaaaaaaa"  << "\n";
     }
 
     // void 	home(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &us)
