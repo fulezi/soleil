@@ -316,7 +316,7 @@ namespace Soleil
     //if (cubeId == 6)
     if (this->nextZone.length() > 0)
       {
-	geom = new NextLevelZone;
+	geom = new NextLevelZone(this->nextZone);
 	std::cout << "Creating next zone: " << this->nextZone << "\n";
       }
     else

@@ -20,11 +20,13 @@ namespace Soleil
 
     virtual void operator()(osg::Node *node, osg::NodeVisitor *nv) override;
 
+    virtual std::string	nextZone() const { return _nextZone; }
+
   protected:
     const Level					&_level;
     const osg::PositionAttitudeTransform	&_playerPosition;
-
     osgViewer::Viewer				&_viewer;
+    std::string					_nextZone = "";
   };
 
 };

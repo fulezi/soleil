@@ -1,0 +1,23 @@
+blocks:
+  x : media/textures/stone_3_2048x2048.jpg
+  y : media/textures/Metal_seamless2_ch16.jpg
+  a : media/textures/summoningwar/stone wall 4.png
+  e : media/textures/stonewithdoor.png
+  l : media/textures/lion.jpg
+  w : media/textures/wind.jpg
+  A : media/textures/arch.png
+  1 : media/textures/stonewithdoor.png
+zones:
+  1 : "media/crenaux.level"
+map: |
+  a1axxaxxaxxaxxaxxaxxxxxxxxxxxxxxxx
+  anaxx.xx.xx.xx.xx.xxxxxxxxxxxxxxxx
+  a.x................nax.......dDe..
+  a.x..xxxxxxxxxxxxxxxxx.........x..
+  a.x................nax.........x..
+  a.x..xxx.xx.xx.xx.xxxx.........x..
+  x....xxxaxxaxxaxxaxxxx.........x..
+  xxx..xxx.xx.xx.xx.xxxx.........x..
+  xxx............................x..
+  xxxxxxxx.xx.xx.xx.xxxxxxxxxxxxxxxx
+  xx......a..a..a..a................

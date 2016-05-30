@@ -1,0 +1,19 @@
+blocks:
+  x : media/textures/stone_3_2048x2048.jpg
+  y : media/textures/Metal_seamless2_ch16.jpg
+  a : media/textures/summoningwar/stone wall 4.png
+  e : media/textures/stonewithdoor.png
+  1 : media/textures/stonewithdoor.png
+  l : media/textures/lion.jpg
+  w : media/textures/wind.jpg
+  A : media/textures/arch.png
+zones:
+  1 : media/sub.level
+map: |
+  xxxxxx
+  xxxnxxx
+  xxx.xxx
+  xn.D.nx
+  xxxdxxx
+  xxxnxxx
+  xxxxxxx

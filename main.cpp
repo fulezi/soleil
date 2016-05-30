@@ -76,124 +76,93 @@ osg::ref_ptr<osg::Node> createLightSource( unsigned int num,
 int	main(int argc, char **argv)
 {
   osg::ArgumentParser arguments(&argc,argv);
-  
-  osg::ref_ptr<osg::Group> root = new osg::Group;
-  root->setName("rootNode");
-
-  root->addChild(createLightSource(0, osg::Vec3(0, -2.0, 0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
-  root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
-
-  root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
-  root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
-
-  Soleil::LevelReader l;
-  osg::ref_ptr<Soleil::Level>  level;
-  try
-    {
-      std::string file;
-
-      if (!arguments.read("-l", osg::ArgumentParser::Parameter(file)))
-	level = l.readYAML("media/shu.level", root);
-      else
-	{
-	  //level = l.readFile(file);
-	  level = l.readYAML(file, root);
-	}
-
-      // level = l.readFile("/usr/home/florian/Documents/Jeux/futur/axes.level");
-      //level = l.readFile("/usr/home/florian/Documents/Jeux/futur/large.level");
-      //level = l.readFile("/usr/home/florian/Documents/Jeux/futur/ouvert.level");
-      //level = l.readFile("/usr/home/florian/Documents/Jeux/futur/bastion.level");
-      //level = l.readFile("/usr/home/florian/Documents/Jeux/futur/huge.level");
-      if (!level)
-  	throw "Cannot read model";
-      root->addChild(level);
-    }
-  catch (const std::exception &e)
-    {
-      std::cout << "Read model failed: "<< e.what() << "=>" << ::strerror(errno)  << "\n";
-      return 1;
-    }
-  catch (const char *msg)
-    {
-      std::cout << "Read model failed: "<< msg  << "\n";
-      return 1;
-    }
-
-
-
-  // Scene Events
-  root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
-  
+ 
   
   //////////
   // TEST //
   //////////
-  osg::ref_ptr<Soleil::Object> obj = new Soleil::Object;
-  obj->setPosition(osg::Vec3(1, 2, 4.2));
-  obj->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(0, 0, 1)));
-  //obj->setAttitude(osg::Quat(-0.5, -0.5, -0.5, 0.5));
-  root->addChild(obj);
-  // osg::Quat	q(osg::DegreesToRadians(-90.0), osg::Vec3(0, 0, 1));
-  // osg::Vec3	v(2, 1, 1);
-  // std::cout << "Before: " << v << "\n";
-  // v = q * v;
-  // obj->setPosition(osg::Vec3(0, 0, 1) + v);
-  // std::cout << "After: " << v << "\n";
-  obj->translate(osg::Vec3(2, -1, -3));
+  // osg::ref_ptr<Soleil::Object> obj = new Soleil::Object;
+  // obj->setPosition(osg::Vec3(1, 2, 4.2));
+  // obj->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(0, 0, 1)));
+  // //obj->setAttitude(osg::Quat(-0.5, -0.5, -0.5, 0.5));
+  // root->addChild(obj);
+  // // osg::Quat	q(osg::DegreesToRadians(-90.0), osg::Vec3(0, 0, 1));
+  // // osg::Vec3	v(2, 1, 1);
+  // // std::cout << "Before: " << v << "\n";
+  // // v = q * v;
+  // // obj->setPosition(osg::Vec3(0, 0, 1) + v);
+  // // std::cout << "After: " << v << "\n";
+  // obj->translate(osg::Vec3(2, -1, -3));
   
 
   /// TEST ON CAMERA
   // viewer.getCamera()->setClearColor( osg::Vec4( 0., 0., 0., 0. ) );  
 
-  osg::ref_ptr<osgViewer::Viewer>  viewer = new osgViewer::Viewer;
-  viewer->setSceneData(root);
 
-  if (!arguments.read("-d"))
+  // TO REACTIVTE !!!!!!!!!!!!!!!!!!!
+  // osg::ref_ptr<osgViewer::Viewer>  viewer = new osgViewer::Viewer;
+  // viewer->setSceneData(root);
+
+  // if (arguments.read("-d"))
+  //   {
+  //     return viewer->run();
+  //   }
+        
+
+  int r = 0;
+  osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
+  std::string nextZone = "media/entrance.level";//cb->nextZone();
+  while (r == 0 && nextZone.length() > 0)
     {
+      viewer->setDone(false);
+      osg::ref_ptr<osg::Group> root = new osg::Group;
+      root->setName("rootNode");
+
+
+      Soleil::LevelReader l;
+      osg::ref_ptr<Soleil::Level>  level;
+      std::string file = nextZone;
+      try
+	{
+	  if (arguments.read("-l", osg::ArgumentParser::Parameter(file)))
+	    level = l.readYAML(file, root);
+	  else
+	    {
+	      level = l.readYAML(nextZone, root);
+	    }
+	  if (!level)
+	    throw "Cannot read model";
+	  root->addChild(level);
+	}
+      catch (const std::exception &e)
+	{
+	  std::cout << "Read model '"<< file << "' failed: "<< e.what() << "=>" << ::strerror(errno)  << "\n";
+	  return 1;
+	}
+      catch (const char *msg)
+	{
+	  std::cout << "Read model failed: "<< msg  << "\n";
+	  return 1;
+	}
+
+      root->addChild(createLightSource(0, osg::Vec3(0, -2.0, 0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
+      root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
+
+      root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
+      root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
+      
       Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation());
-      root->addChild(f->_tmp);
+      //root->addChild(f->_tmp);
       viewer->setCameraManipulator(f);
 
-      root->addUpdateCallback(new Soleil::NextLevelZoneCallBack(*level, *f, *viewer));
-    }
-    
-  /* else auto-add trackball */
-  
-    
-  // while (!viewer.done())
-  //   {
-  //     // eye.x()		+= .01;
-  //     // center.x()	+= .01;
+      osg::ref_ptr<Soleil::NextLevelZoneCallBack> cb = new Soleil::NextLevelZoneCallBack(*level, *f, *viewer);
+      root->addUpdateCallback(cb);
+      root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
+
+      viewer->setSceneData(root);
       
-  //     //viewer.getCamera()->setViewMatrixAsLookAt(eye, center, normale);
-  //     viewer.getCamera()->setViewMatrix(caman->getView());
+      r = viewer->run();
+      nextZone = cb->nextZone();
       
-  //     // Draw the next frame.
-  //     viewer.frame();
-  //   }
-  // return 0;
-
-
-  viewer->realize();
-	
-  for(unsigned int contextID = 0;
-      contextID<osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
-      ++contextID)
-    {
-      osg::GLExtensions* textExt = osg::GLExtensions::Get(contextID,false);
-      if (textExt)
-	{
-	  if (!textExt->isMultiTexturingSupported)
-	    {
-	      std::cout<<"Warning: multi-texturing not supported by OpenGL drivers, unable to run application."<<std::endl;
-	      return 1;
-	    }
-	  else
-	    std::cout << "Ouffff"  << "\n";
-	}
     }
-
-  
-  return viewer->run();
 }

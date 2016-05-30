@@ -19,13 +19,21 @@ namespace Soleil
     static const char *ClassName;
     
   public:
-    NextLevelZone() {}
+    NextLevelZone(std::string nextZone) : _nextZone(nextZone) {}
     virtual ~NextLevelZone(void) {}
 
     virtual const char *className() const override
     {
       return NextLevelZone::ClassName;
     }
+
+    virtual const std::string &nextZone(void) const noexcept
+    {
+      return _nextZone;
+    }
+
+  protected:
+    std::string		_nextZone;
     
   };
 
