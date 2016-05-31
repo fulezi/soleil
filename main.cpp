@@ -97,18 +97,16 @@ int	main(int argc, char **argv)
 
   /// TEST ON CAMERA
   // viewer.getCamera()->setClearColor( osg::Vec4( 0., 0., 0., 0. ) );  
-
-
-  // TO REACTIVTE !!!!!!!!!!!!!!!!!!!
-  // osg::ref_ptr<osgViewer::Viewer>  viewer = new osgViewer::Viewer;
-  // viewer->setSceneData(root);
-
+        
+  /* View Developper: Just view an quit */
   // if (arguments.read("-d"))
   //   {
+  //     osg::ref_ptr<osgViewer::Viewer>  viewer = new osgViewer::Viewer;
+  //     viewer->setSceneData(root);
   //     return viewer->run();
   //   }
-        
 
+  bool devView = arguments.read("-d");
   int r = 0;
   osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
   std::string nextZone = "media/entrance.level";//cb->nextZone();
@@ -150,19 +148,23 @@ int	main(int argc, char **argv)
 
       root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
       root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
-      
-      Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation());
-      //root->addChild(f->_tmp);
-      viewer->setCameraManipulator(f);
-
-      osg::ref_ptr<Soleil::NextLevelZoneCallBack> cb = new Soleil::NextLevelZoneCallBack(*level, *f, *viewer);
-      root->addUpdateCallback(cb);
-      root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
 
       viewer->setSceneData(root);
-      
-      r = viewer->run();
-      nextZone = cb->nextZone();
-      
+      root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
+      if (devView == false)
+	{
+	  Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(level->startingPosition(), level->startingOrientation());
+	  //root->addChild(f->_tmp);
+	  viewer->setCameraManipulator(f);
+	  osg::ref_ptr<Soleil::NextLevelZoneCallBack> cb = new Soleil::NextLevelZoneCallBack(*level, *f, *viewer);
+	  root->addUpdateCallback(cb);
+	  
+	  r = viewer->run();	
+	  nextZone = cb->nextZone();
+	}
+      else
+	return viewer->run();
     }
+
+  return r;
 }
