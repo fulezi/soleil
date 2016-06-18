@@ -8,6 +8,7 @@
 # include <osg/NodeVisitor>
 # include <osg/PositionAttitudeTransform>
 
+# include "GameInstance.hpp"
 # include "Level.hpp"
 
 namespace Soleil
@@ -15,7 +16,7 @@ namespace Soleil
   class NextLevelZoneCallBack : public osg::NodeCallback
   {
   public:
-    NextLevelZoneCallBack(const Level &level, const osg::PositionAttitudeTransform &playerPosition, osgViewer::Viewer &viewer);
+    NextLevelZoneCallBack(const Level &level, const osg::PositionAttitudeTransform &playerPosition, GameInstance &viewer);
     virtual ~NextLevelZoneCallBack(void);
 
     virtual void operator()(osg::Node *node, osg::NodeVisitor *nv) override;
@@ -25,7 +26,7 @@ namespace Soleil
   protected:
     const Level					&_level;
     const osg::PositionAttitudeTransform	&_playerPosition;
-    osgViewer::Viewer				&_viewer;
+    GameInstance				&_viewer;
     std::string					_nextZone = "";
   };
 

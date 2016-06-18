@@ -13,8 +13,9 @@
 /* TODO regler les problemes de collision sur le cote */
 namespace Soleil
 {
-  FirstPersonManipulator::FirstPersonManipulator(const osg::Vec3d &eye, const osg::Vec3d &center)
+  FirstPersonManipulator::FirstPersonManipulator(osg::ref_ptr<GameInstance> gameInstance, const osg::Vec3d &eye, const osg::Vec3d &center)
     : _move(0, 0, 0)
+    , _gameInstance(gameInstance)
   {
     osg::Vec3 up(0.0, 0.0, 1.0);
     
@@ -172,7 +173,8 @@ namespace Soleil
   {
     bool r = StandardManipulator::handleFrame(ea, us);
 
-    if (_move.x() == 0 && _move.z() == 0)
+    if ((_move.x() == 0 && _move.z() == 0)
+	|| _gameInstance->playing() == false)
       return r;
 
     double deltaTime = ea.getTime() - _lastFrameTime;
@@ -291,6 +293,9 @@ namespace Soleil
   
     bool 	FirstPersonManipulator::handleKeyDown(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &us)
     {
+      if (_gameInstance->playing() == false)
+	return false;
+      
       switch (ea.getKey())
 	{
 	case 'w': case 'W':
@@ -340,6 +345,12 @@ namespace Soleil
 
     bool 	FirstPersonManipulator::handleKeyUp(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &us)
     {
+      if (_gameInstance->inMenu())
+	{
+	  _gameInstance->play();
+	  return true;
+	}
+      
       switch (ea.getKey())
 	{
 	case 'w': case 'W':

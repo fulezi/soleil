@@ -7,6 +7,7 @@
 
 #include <osg/Geode>
 
+#include "GameInstance.hpp"
 
 namespace Soleil
 {
@@ -14,7 +15,7 @@ namespace Soleil
   class FirstPersonManipulator : public osgGA::StandardManipulator, public osg::PositionAttitudeTransform
   {
   public:
-    FirstPersonManipulator(const osg::Vec3d &eye, const osg::Vec3d &center);
+    FirstPersonManipulator(osg::ref_ptr<GameInstance> gameInstance,  const osg::Vec3d &eye, const osg::Vec3d &center);
     virtual ~FirstPersonManipulator(void);
 
     // public:
@@ -76,6 +77,7 @@ namespace Soleil
     double		_translationSpeed = 2.0;
     double		_lastFrameTime = 0;
     //osg::Matrixd		_view;
+    osg::ref_ptr<GameInstance> _gameInstance;
 
   public:
     bool DrawedCollision(osgGA::GUIActionAdapter &us, const osg::Vec3 &start, const osg::Vec3 &end, osg::Vec4 c);

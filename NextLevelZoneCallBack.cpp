@@ -17,7 +17,7 @@
 namespace Soleil
 {
   NextLevelZoneCallBack::NextLevelZoneCallBack(const Level &level, const osg::PositionAttitudeTransform &playerPosition
-					       , osgViewer::Viewer &viewer
+					       , GameInstance &viewer
 					       )
     : _level(level)
     , _playerPosition(playerPosition)
@@ -68,6 +68,7 @@ namespace Soleil
 		if (n->className() == NPC::ClassName)
 		  {
 		    std::cout << "HAHAHAHAHAHAH!"  << "\n";
+		    _viewer.gameOver();
 		    //_viewer.setDone(true);
 		    /* TEST */
 		    // {
@@ -85,7 +86,7 @@ namespace Soleil
 		    //   root->addChild(level);
 		    //   _viewer.setSceneData(root);
 		    // }
-		    _viewer.setDone(true);
+		    //_viewer.setDone(true);
 		  }
 	      }
 
