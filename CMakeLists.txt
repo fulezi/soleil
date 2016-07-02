@@ -7,10 +7,19 @@ set(CMAKE_CXX_STANDARD 14)
 # Project dependencies  #
 #########################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/")
-find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA osgDB  osgUtil osgAnimation osgManipulator) # 3.5.1  .. PATHS ${OSG_PATH}
+find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA osgDB  osgUtil osgAnimation osgManipulator osgText) # 3.5.1  .. PATHS ${OSG_PATH}
 
 FIND_PACKAGE(CPPUNIT REQUIRED)
 FIND_PACKAGE(YamlCpp REQUIRED)
+
+find_library(OPENAL_LIBRARY
+    NAMES openal
+)
+
+find_library(ALUT_LIBRARY
+    NAMES alut
+)
+
 
 find_package(Boost
   COMPONENTS format
@@ -35,6 +44,9 @@ set(HDRS
   NPC.hpp
   UpdateNPCVisitor.hpp
   NextLevelZoneCallBack.hpp
+  ui/Container.hpp
+  ui/Text.hpp
+  ui/Window.hpp
   )
 
 set(SRCS
@@ -47,6 +59,9 @@ set(SRCS
   NPC.cpp
   UpdateNPCVisitor.cpp
   NextLevelZoneCallBack.cpp
+  ui/Container.cpp
+  ui/Text.cpp
+  ui/Window.cpp
   )
 
 ################
@@ -72,6 +87,8 @@ target_link_libraries(soleil
   ${OPENSCENEGRAPH_LIBRARIES}
   ${Boost_LIBRARIES}
   ${YAMLCPP_LIBRARY}
+  ${ALUT_LIBRARY}
+  ${OPENAL_LIBRARY}
   )
 
 ########

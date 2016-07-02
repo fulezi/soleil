@@ -8,7 +8,7 @@ blocks:
   w : media/textures/wind.jpg
   A : media/textures/arch.png
 zones:
-  1 : media/sub.level
+  1 : media/final.level
 map: |
   xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   x.....xxxn................xxx

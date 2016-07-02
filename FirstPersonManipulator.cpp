@@ -32,6 +32,7 @@ namespace Soleil
   
   FirstPersonManipulator::~FirstPersonManipulator(void)
   {
+    _gameInstance = nullptr;
   }
 
   void 	FirstPersonManipulator::setTransformation(const osg::Vec3d &eye, const osg::Quat &rotation)

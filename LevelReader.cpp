@@ -17,6 +17,7 @@
 #include "Cube.hpp"
 #include "NPC.hpp"
 
+#include "Sound.hpp"
 
 #include <iostream>
 #include <osg/io_utils>
@@ -112,6 +113,14 @@ namespace Soleil
 	    // ghoul->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Vec3(1, 0, 0)));
 	    ghoul->setName("GhoulNode_"+std::to_string(npcId));
 	    level->addChild(ghoul);
+
+
+
+	    osg::ref_ptr<UpdateSoundCallBack> updateSound = new UpdateSoundCallBack(*ghoul);
+	    ghoul->addUpdateCallback(updateSound);
+
+	    level->_sounds.push_back(updateSound);
+	    
 	  }
 	  break;
 	default:
@@ -145,12 +154,28 @@ namespace Soleil
     level->texcoords->push_back( osg::Vec2(y, maxX) ); // 2
     level->texcoords->push_back( osg::Vec2(y, 0.0f) ); // 3
 
+    // roof -------------
+    level->vertices->push_back(osg::Vec3(0.0f,	0.0f,	1.0f));
+    level->vertices->push_back(osg::Vec3(maxX,	0.0f,	1.0f));
+    level->vertices->push_back(osg::Vec3(maxX,	y,	1.0f));
+    level->vertices->push_back(osg::Vec3(0,	y,	1.0f));
+
+    level->normals->push_back(osg::Vec3(0.0f, 0.0f, -1.0f));
+    level->normals->push_back(osg::Vec3(0.0f, 0.0f, -1.0f));
+    level->normals->push_back(osg::Vec3(0.0f, 0.0f, -1.0f));
+    level->normals->push_back(osg::Vec3(0.0f, 0.0f, -1.0f));
+
+    level->texcoords->push_back( osg::Vec2(0.0f, 0.0f) ); // 0
+    level->texcoords->push_back( osg::Vec2(0.0f, maxX) ); // 1
+    level->texcoords->push_back( osg::Vec2(y, maxX) ); // 2
+    level->texcoords->push_back( osg::Vec2(y, 0.0f) ); // 3
+
 
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
     geom->setName("FloorGometry");
     geom->setVertexArray(level->vertices);
     geom->setNormalArray(level->normals, osg::Array::Binding::BIND_PER_VERTEX);
-    geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4)); // +4 for the floor texture coordinates
+    geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 8)); // +4 for the floor texture coordinates and 4 for the roof
     osgUtil::SmoothingVisitor::smooth(*geom);
     //
 

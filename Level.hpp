@@ -9,6 +9,8 @@
 # include <osg/Group>
 # include <osg/Geometry>
 
+# include "Sound.hpp"
+
 namespace Soleil
 {
   class LevelReader;
@@ -59,6 +61,14 @@ namespace Soleil
       return false;
     }
 
+    void stop()
+    {
+      /* TODO horrible hack because there is a memleak and the sound not stop: */
+      for (auto it = _sounds.cbegin(); it != _sounds.cend(); ++it) {
+	it->get()->stop();
+      }
+    }
+
 
   protected:
     osg::ref_ptr<osg::Group>	_root;
@@ -73,6 +83,9 @@ namespace Soleil
     osg::ref_ptr<osg::Group> scene = new osg::Group;
 
     std::vector<osg::ref_ptr<osg::Geometry>>	_nextLevelZones;
+
+    std::vector<osg::ref_ptr<UpdateSoundCallBack>>	_sounds;
+
     
     friend Soleil::LevelReader;
   };

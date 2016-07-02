@@ -15,22 +15,21 @@ Start with '-d' to toggle the TrackBall view.
 
 ## In Progress
    * A next level zone  
+   * A end
+   * Death when player colliding with the monster
+   * Some anxious sounds
+
    
 ## Road Map
    * Stressing light
    * Port compilation (GNU/Linux, Windows)
-   * A cool Menu
-   * A end
-   * Death when player colliding with the monster
    * Bump textures
-   * Some anxious sounds
    * Allow the configuration of the texture of the floor
    * Transparency?
    * Include medias in the commit
    
 ## Bugs / PITA
    * On startup there is a glitch with the mouse + the translation is shaking until we move the mouse
-   * Hide the cursor
 
 ## Current features
    * Doom view with the collisions

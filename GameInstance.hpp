@@ -14,7 +14,9 @@ namespace Soleil
     enum class GameState { Menu, Playing, Dead };
 
   public:
-    GameInstance() {}
+    GameInstance()
+      : osgViewer::Viewer()
+    {}
     virtual ~GameInstance(void) {}
 
     // States:

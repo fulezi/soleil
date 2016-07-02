@@ -28,7 +28,7 @@ namespace Soleil
 
   // TODO Add time so the move is independent of the fps
   void UpdateNPCVisitor::apply(osg::Node &node)
-  {
+  {    
     //std::cout << "-----------------" << node.getName() << ":" << node.className() << "\n";
     if (node.className() == NPC::ClassName) 
       {
@@ -135,6 +135,9 @@ namespace Soleil
 
   void UpdateNPCNodeCallBack::operator()(osg::Node *node, osg::NodeVisitor *nv)
   {
+    if (_gameInstance->playing() == false)
+      return ;
+
     UpdateNPCVisitor visitor(_root);
 
     visitor.setTraversalMode( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN );

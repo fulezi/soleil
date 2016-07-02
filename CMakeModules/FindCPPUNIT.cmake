@@ -1,3 +1,4 @@
+# Source: https://github.com/phtrivier/cppunit-money-example-cmake/blob/master/code/cmake_modules/FindCPPUNIT.cmake
 #
 # Find the CppUnit includes and library
 #

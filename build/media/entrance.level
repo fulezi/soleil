@@ -10,7 +10,7 @@ blocks:
   A : media/textures/arch.png
 zones:
   1 : media/sub.level
-  2 : media/final.level
+  2 : media/void.level
 map: |
   xxxwxxx..w........xxxxxxxxxxx
   xxx.xxx........x..x........nx

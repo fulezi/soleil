@@ -12,12 +12,13 @@
 namespace Soleil
 {
   
-  class FirstPersonManipulator : public osgGA::StandardManipulator, public osg::PositionAttitudeTransform
+  class FirstPersonManipulator : virtual public osgGA::StandardManipulator, virtual public osg::PositionAttitudeTransform
   {
   public:
     FirstPersonManipulator(osg::ref_ptr<GameInstance> gameInstance,  const osg::Vec3d &eye, const osg::Vec3d &center);
-    virtual ~FirstPersonManipulator(void);
 
+    virtual ~FirstPersonManipulator(void);
+    
     // public:
     //   virtual const osg::Matrixd getView(void) const noexcept;
     //   virtual bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
@@ -78,6 +79,7 @@ namespace Soleil
     double		_lastFrameTime = 0;
     //osg::Matrixd		_view;
     osg::ref_ptr<GameInstance> _gameInstance;
+    //osg::ref_ptr<osg::PositionAttitudeTransform> 	_position;
 
   public:
     bool DrawedCollision(osgGA::GUIActionAdapter &us, const osg::Vec3 &start, const osg::Vec3 &end, osg::Vec4 c);

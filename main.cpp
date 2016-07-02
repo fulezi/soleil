@@ -27,9 +27,14 @@
 #include <iostream>
 #include <osg/io_utils>
 
+#include "Sound.hpp"
+
 
 namespace Soleil
 {
+  // TODO test, to be removed
+  osg::StateSet *lightStateSet;
+  
   class Object : public osg::PositionAttitudeTransform
   {
   public:
@@ -58,7 +63,7 @@ namespace Soleil
   };
 };
 
-osg::ref_ptr<osg::Node> createLightSource( unsigned int num,
+osg::ref_ptr<osg::Node> createLightSource(unsigned int num,
 			      const osg::Vec3& trans,
 			      const osg::Vec4& color )
 {
@@ -80,6 +85,37 @@ osg::ref_ptr<osg::Node> createLightSource( unsigned int num,
   sourceTrans->addChild( lightSource.get() );
   return sourceTrans;
 }
+
+osg::ref_ptr<osg::PositionAttitudeTransform> createLight(unsigned int num, osg::Vec4 color)
+{	
+  osg::ref_ptr<osg::Light> light = new osg::Light();
+  // each light must have a unique number
+  light->setLightNum(num);
+  // we set the light's position via a PositionAttitudeTransform object
+  light->setPosition(osg::Vec4(0.0, 0.0, 0.0, 1.0));
+  light->setDiffuse(color);
+  light->setSpecular(osg::Vec4(1.0, 1.0, 1.0, 1.0));
+  // light->setAmbient(osg::Vec4(0.0, 0.0, 0.0, 1.0));
+
+
+
+  
+  osg::ref_ptr<osg::Geode> lightMarker = new osg::Geode();
+  //lightMarker->getOrCreateStateSet()->setAttribute(createSimpleMaterial(lightColors[i]));
+
+  osg::ref_ptr<osg::LightSource> lightSource = new osg::LightSource();
+  lightSource->setLight(light);
+  lightSource->setLocalStateSetModes(osg::StateAttribute::ON);
+  lightSource->setStateSetModes(*Soleil::lightStateSet, osg::StateAttribute::ON);
+
+  osg::ref_ptr<osg::PositionAttitudeTransform> lightTransform = new osg::PositionAttitudeTransform();
+  lightTransform->addChild(lightSource);
+  lightTransform->addChild(lightMarker);
+  lightTransform->setPosition(osg::Vec3(-4, -4, 0.8));
+  lightTransform->setScale(osg::Vec3(0.1,0.1,0.1));
+  return lightTransform;
+}
+
 
 
 osg::ref_ptr<osg::Geometry> createQuad()
@@ -189,6 +225,10 @@ int	main(int argc, char **argv)
 
   viewer->getCamera()->setClearColor( osg::Vec4( 0., 0., 0., 0. ) );  
 
+  std::cout << "SOUND: ------------------------------------------------------------------------" << "\n";
+  Soleil::Device device;
+
+
   
   std::string nextZone = "media/entrance.level";//cb->nextZone();
   while (r == 0 && nextZone.length() > 0)
@@ -196,6 +236,11 @@ int	main(int argc, char **argv)
       viewer->setDone(false);
       //osg::ref_ptr<osg::Group> root = new osg::Group;
       osg::ref_ptr<osg::Switch> root = new osg::Switch;
+
+
+      // TODO test, to be removed
+      Soleil::lightStateSet = root->getOrCreateStateSet();
+
       
       root->setName("rootNode");
 
@@ -214,7 +259,9 @@ int	main(int argc, char **argv)
 	    }
 	  if (!level)
 	    throw "Cannot read model";
+	  
 	  root->addChild(level, viewer->playing());
+	  level->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(viewer, level));
 	}
       catch (const std::exception &e)
 	{
@@ -273,6 +320,7 @@ int	main(int argc, char **argv)
       w->setBackground( "media/background.png"); 
       osg::ref_ptr<Soleil::ui::Text> text = new Soleil::ui::Text("Enter the Maze!");
       w->set(text, 1);
+      
       root->addChild(w, viewer->inMenu());
 
 
@@ -295,26 +343,45 @@ int	main(int argc, char **argv)
 
       
       root->addChild(createLightSource(0, osg::Vec3(0, -2.0, 0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
-      root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
-
-      root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
-      root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
+      // root->addChild(createLightSource(1, osg::Vec3(0, -16.0, 10.0), osg::Vec4(0.1, 0.1, 0.1, 0.1)));
+      // root->getOrCreateStateSet()->setMode( GL_LIGHT0, osg::StateAttribute::ON );
+      // root->getOrCreateStateSet()->setMode( GL_LIGHT1, osg::StateAttribute::ON );
+      root->addChild(createLight(1, osg::Vec4(0.3, 0.3, 0.3, 0.3)));
 
       viewer->setSceneData(root);
-      root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
+      //root->addUpdateCallback(new Soleil::UpdateNPCNodeCallBack(root));
       if (devView == false)
 	{
-	  Soleil::FirstPersonManipulator *f = new Soleil::FirstPersonManipulator(viewer, level->startingPosition(), level->startingOrientation());
+	  //osg::ref_ptr<Soleil::FirstPersonManipulator>  f = new Soleil::FirstPersonManipulator(viewer, level->startingPosition(), level->startingOrientation());
+	  Soleil::FirstPersonManipulator f(viewer, level->startingPosition(), level->startingOrientation());
+
+	  osg::ref_ptr<Soleil::ListenerCallBack> listenerCallBack = new Soleil::ListenerCallBack(f, device);
+	  root->addUpdateCallback(listenerCallBack);
+
+
+	  
 	  //root->addChild(f->_tmp);
-	  viewer->setCameraManipulator(f);
-	  osg::ref_ptr<Soleil::NextLevelZoneCallBack> cb = new Soleil::NextLevelZoneCallBack(*level, *f, *viewer);
+	  viewer->setCameraManipulator(&f);
+	  osg::ref_ptr<Soleil::NextLevelZoneCallBack> cb = new Soleil::NextLevelZoneCallBack(*level, f, *viewer);
 	  root->addUpdateCallback(cb);
 	  
-	  r = viewer->run();	
+	  r = viewer->run();
 	  nextZone = cb->nextZone();
+
+	  // TODO So brutal:
+	  //delete f;
+	  level->stop();
+	  viewer->setSceneData(nullptr);
+	  root = nullptr;
+
 	}
       else
-	return viewer->run();
+	{
+	  viewer->play();
+  
+	  return viewer->run();
+	}
+
     }
 
   return r;

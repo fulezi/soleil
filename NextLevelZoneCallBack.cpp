@@ -16,7 +16,7 @@
 
 namespace Soleil
 {
-  NextLevelZoneCallBack::NextLevelZoneCallBack(const Level &level, const osg::PositionAttitudeTransform &playerPosition
+  NextLevelZoneCallBack::NextLevelZoneCallBack(Level &level, const osg::PositionAttitudeTransform &playerPosition
 					       , GameInstance &viewer
 					       )
     : _level(level)
@@ -69,6 +69,7 @@ namespace Soleil
 		  {
 		    std::cout << "HAHAHAHAHAHAH!"  << "\n";
 		    _viewer.gameOver();
+		    _level.stop();
 		    //_viewer.setDone(true);
 		    /* TEST */
 		    // {
